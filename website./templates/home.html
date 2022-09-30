@@ -1,0 +1,180 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<h1 align="center">Search</h1>
+
+</ul> 
+<ul class="list-group list-group-flush" id="savedSearches">
+  
+  {% if (user.savedSearches|length)>4%}
+  {% set from = (user.savedSearches|length) -1 %}
+  {% set to = (user.savedSearches|length) -5 %}
+  {% else%}
+  {% set from = (user.savedSearches|length)-1 %}
+  {% set to = -1 %}
+  {% endif %}
+
+
+  {% for x in range(from, to, -1) %}
+    <li class="list-group-item">
+      {{ user.savedSearches[x].departureStation  }}
+      {{ " to "  }}
+      {{ user.savedSearches[x].destinationStation  }}
+      {{ " | "  }}
+      {{ user.savedSearches[x].day  }}
+      {{ " | "  }}
+      {{ user.savedSearches[x].searchBy  }}
+      {{ user.savedSearches[x].time  }}
+      <button type="button" class="close" onClick="searchSaved({{ user.savedSearches[x].id }})">
+        <span aria-hidden="true"></span>
+      search</button>
+      <button type="button"  onClick="deleteSavedSearch({{ user.savedSearches[x].id }})">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+  {% endfor %}
+</ul>
+
+
+<form method="POST" autocomplete="off" >
+  <br>
+  <div class="form-group">
+    <label for="departureStation">Departure Station</label>
+    <input
+      type="text"
+      class="form-control"
+      id="departureStation"
+      name="departureStation"
+      placeholder="Enter departure station"
+    />
+  </div>
+  <div class="form-group">
+    <label for="destinationStation">Destination Station</label>
+    <input
+      type="text"
+      class="form-control"
+      id="destinationStation"
+      name="destinationStation"
+      placeholder="Enter destination station"
+    />
+  </div>
+  <input type="radio" name="searchBy" value="depart after" checked="checked">
+  <label for="Departure Time">Departure Time</label><br>
+  <input type="radio" name="searchBy" value="arrive before">
+  <label for="Arrival Time">Arrival Time</label>
+
+  <div class="form-row">
+    <div class="form-group col-md-1">
+      <select id="hours" class="form-control" name="hours">
+        <option>04</option>
+        <option>05</option>
+        <option>06</option>
+        <option selected>07</option>
+        <option>08</option>
+        <option>09</option>
+        <option>10</option>
+        <option>11</option>
+        <option>12</option>
+        <option>13</option>
+        <option>14</option>
+        <option>15</option>
+        <option>16</option>
+        <option>17</option>
+        <option>18</option>
+        <option>19</option>
+        <option>20</option>
+        <option>21</option>
+        <option>22</option>
+      </select>
+    </div>
+    {{":"}}
+    <div class="form-group col-md-1">
+      <select id="minutes" class="form-control" name="minutes">
+        <option selected>00</option>
+        <option>10</option>
+        <option>15</option>
+        <option>20</option>
+        <option>25</option>
+        <option>30</option>
+        <option>35</option>
+        <option>40</option>
+        <option>45</option>
+        <option>50</option>
+        <option>55</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group col-md-3">
+    <select id="day" class="form-control" name="day">
+      <option selected>weekday</option>
+      <option>saturday</option>
+      <option>sunday_holiday</option>
+    </select>
+  </div>
+
+  <div align="center">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+
+
+{% if route!=[]%}
+  <!-- <p>{{ route }}</p> -->
+
+  <br>
+  <table class="table table-responsive table-hover" >
+    <thead>
+          <tr><th>Departure Station</th><th>Destination Station</th><th>Departure Time</th><th>Arrival Time</th><th>Train No</th></tr>
+      </thead>
+      <tbody>
+     
+          <tr>
+              <td>{{route[0][0]}}</td>
+              <td>{{route[(route|length)-1][1]}}</td>
+              <td>{{route[0][2]}}</td>
+              <td>{{route[(route|length)-1][3]}}</td>
+          </tr>
+  
+          <tr class="clickable" data-toggle="collapse" id="row1" data-target=".row1">
+            <td>Click me to see route details</td>
+        </tr>
+          
+  
+          {% for current_route in route %}
+          <tr class="collapse row1">
+            <td>{{ current_route[0] }}</td>
+            <td>{{ current_route[1] }}</td>
+            <td>{{ current_route[2] }}</td>
+            <td>{{ current_route[3] }}</td>
+            <td>{{ current_route[4] }}</td> 
+          </tr>
+        {% endfor %}
+  
+
+      </tbody>
+  </table>
+
+
+  <style>
+  .collapsing {
+    -webkit-transition: height .01s ease;
+    transition: height .01s ease
+  }
+  </style>
+
+  <p>{{ map | safe }}</p>
+{%else%}
+  <p>There is no route</p>
+{% endif%}
+
+
+<div id="bottom">
+    
+  <script>
+      document.getElementById('{{ scroll }}').scrollIntoView();
+  </script>
+
+<!-- <p>{{ stations }}</p> -->
+
+{% endblock %}
+
+
+
