@@ -1,0 +1,98 @@
+{% extends "base.html" %} {% block title %}Admin Page{% endblock %} {% block content
+%}
+<h3 align="center">Admin Page</h3>
+
+<form method="POST" enctype="multipart/form-data" value="customFile" name="nameFile">
+
+  <h4>Upload Train Timetables</h4>
+  <div class="custom-file">
+    <input type="file" class="custom-file-input" id="customFile" name="customFile">
+    <label class="custom-file-label" for="customFile">Choose file</label>
+  </div>
+  <br />
+  <div class="form-group col-md-3">
+    <select id="day" class="form-control" name="day">
+      <option selected>weekday</option>
+      <option>saturday</option>
+      <option>sunday/public holiday</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary" name="form1">Upload</button>
+</form>
+
+<br />
+<br />
+<h4>Upload Station Co-ordinates</h4>
+<form method="POST" enctype="multipart/form-data">
+  <div class="custom-file">
+    <input type="file" class="custom-file-input" id="customFile" name="stationsFile">
+    <label class="custom-file-label" for="customFile">Choose file</label>
+  </div>
+  <br />
+  <button type="submit" class="btn btn-primary" name="form2">Upload</button>
+</form>
+
+
+
+<br />
+<br />
+<h4>Disabled Routes</h4>
+</ul>
+<ul class="list-group list-group-flush" id="users">
+  {% for disabledRoute in disabledRoutes %}
+  <li class="list-group-item">
+    {{ disabledRoute  }}
+  {% endfor %}
+</ul>
+<br />
+
+<form method="POST" enctype="multipart/form-data" autocomplete="off" >
+      <input
+      type="text"
+      class="form-control"
+      id="routeNo"
+      name="routeNo"
+      placeholder="Enter train number"
+    />
+
+    <input type="radio" name="routeAvailibility" value="Disable Route" checked="checked">
+    <label for="Disable Route">Disable Route</label><br>
+    <input type="radio" name="routeAvailibility" value="Enable Route">
+    <label for="Enable Route">Enable Route</label>
+  <br />
+  <button type="submit" class="btn btn-primary" name="form3">Update</button>
+</form>
+
+<br />
+<br />
+<h4>Users</h4>
+</ul>
+<ul class="list-group list-group-flush" id="users">
+  {% for eachuser in userlist %}
+  <li class="list-group-item">
+    {{ eachuser.email  }}
+    {{"|"}}
+    {{ eachuser.admin_status}}   
+    {{"|"}}
+    {% if eachuser.id!=user.id%}
+        <button type="button" onClick="deleteUser({{ eachuser.id }})" class="btn btn-danger">
+          <span aria-hidden="true"></span>
+        delete user</button>
+        {% if eachuser.admin_status=="user"%}
+        <button type="button" onClick="makeAdmin({{ eachuser.id }})" class="btn btn-success">
+          <span aria-hidden="true"></span>
+        make admin</button>
+        {% else%}
+        <button type="button" onClick="removeAdmin({{ eachuser.id }})" class="btn btn-warning">
+          <span aria-hidden="true"></span>
+        remove admin</button>
+        {%endif%}
+    {% else%}
+    {{"(you!)"}}
+    {%endif%} 
+  </li>
+  {% endfor %}
+</ul>
+
+
+{% endblock %}
